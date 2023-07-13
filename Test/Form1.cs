@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScottPlot;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,14 +16,9 @@ namespace Test
         public Form1()
         {
             InitializeComponent();
-            this.button1.Click += (sender, e) => { this.label1.Text = "Clicked"; };
+        //    this.button1.Click += (sender, e) => { this.label1.Text = "Clicked"; };
         }
         
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void formsPlot1_Load(object sender, EventArgs e)
         {
 
@@ -30,7 +26,10 @@ namespace Test
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-
+            double[] xs = DataGen.Consecutive(51);
+            double[] sin = DataGen.Sin(51);
+            formsPlot1.Plot.AddScatter(xs, sin);
+            formsPlot1.Refresh();
         }
     }
 }
