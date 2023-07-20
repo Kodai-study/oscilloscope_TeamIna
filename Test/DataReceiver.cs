@@ -9,10 +9,11 @@ namespace Test
     public class DataReceiver
     {
         private long cnt;
+        private double sample_volt = 0.0;
         public bool GetVoltageData(out long u_sec, out double voltage)
         {
             u_sec = cnt += 100;
-            voltage = 0.0;
+            voltage = sample_volt += 0.1;
             return true;
         }
     }
