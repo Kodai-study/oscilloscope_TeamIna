@@ -12,7 +12,7 @@ namespace Test
     public class DataReceiver
     {
         private long cnt;
-
+        private string bufstr;
         public bool openSerial(string comPort)
         {
             // シリアルポートの設定
@@ -44,6 +44,16 @@ namespace Test
             sport.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
             return true;
         }
+        public string getSerialLine()
+        {
+            string str = null;
+            if (bufstr != null)
+            {
+                str = bufstr;
+                bufstr = null;
+            }
+            return str;
+        }
         public bool GetVoltageData(out long u_sec, out double voltage)
         {
             u_sec = cnt += 100;
@@ -51,11 +61,12 @@ namespace Test
             return true;
         }
 
-        private static void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
+        private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
             string dataReceived = sp.ReadExisting();
-
+            bufstr = dataReceived;
+            Console.WriteLine(dataReceived);
         }
 
     }

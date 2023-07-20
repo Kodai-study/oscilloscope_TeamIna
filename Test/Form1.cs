@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,15 +14,15 @@ namespace Test
     public partial class Form1 : Form
     {
         DataReceiver dataReceiver = new DataReceiver();
-        
         public Form1()
         {
             InitializeComponent();
-            this.button1.Click += (sender, e) => { this.label1.Text = "Clicked"; };
+            //this.button1.Click += (sender, e) => { this.label1.Text = "Clicked"; };
             if(dataReceiver.openSerial("COM9") == true)
             {
                 writeLabel("Conneced!");
             }
+            this.button1.Click += (sender, e) => { this.label1.Text = dataReceiver.getSerialLine(); };
         }
         
         private void button1_Click(object sender, EventArgs e)
@@ -43,5 +44,6 @@ namespace Test
         {
             this.label1.Text = str;
         }
+
     }
 }
