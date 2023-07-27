@@ -15,17 +15,15 @@ namespace Test
     {
         Plotter plotter;
         DataReceiver dataReceiver;
+
         public Form1()
         {
             InitializeComponent();
             this.button1.Click += (sender, e) => { this.label1.Text = "Clicked"; };
-            
-
             this.plotter = new(formsPlot1);
             dataReceiver = new();
-           
         }
-        
+
         private void button1_Click(object sender, EventArgs e)
         {
 
@@ -36,18 +34,19 @@ namespace Test
 
         }
 
+
         private void button1_Click_1(object sender, EventArgs e)
         {
-            long u_sec;
-            double voltage;
-            if(dataReceiver.GetVoltageData(out u_sec, out voltage))
+            /* ボタンを押すと、データを受け取ったと仮定して、プロッタにデータを渡す */
+            if (dataReceiver.GetVoltageData(out long u_sec, out double voltage))
             {
                 this.plotter.registerData(u_sec, voltage);
             }
-            formsPlot1.Plot.SetAxisLimitsX(xMin: 0, xMax: 0.01);
-            //formsPlot1.Plot.AxisAutoX();
 
+            /* 横幅、縦幅は、今のところ自動で変わる */
+            formsPlot1.Plot.SetAxisLimitsX(xMin: 0, xMax: 0.01);
             formsPlot1.Plot.AxisAutoY();
+            formsPlot1.Plot.AxisAutoX();
             this.formsPlot1.Refresh();
         }
     }
