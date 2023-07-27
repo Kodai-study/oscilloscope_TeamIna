@@ -11,8 +11,14 @@ namespace Test
 {
     public class DataReceiver
     {
+        public event EventHandler<string> DataReceived;
         private long cnt;
         private string bufstr;
+        /// <summary>
+        /// 指定されたCOMポートでシリアル通信を開始します。
+        /// </summary>
+        /// <param name="comPort">シリアル通信のポート番号</param>
+        /// <returns>シリアル通信の開始に成功したかどうかを示す値</returns>
         public bool openSerial(string comPort)
         {
             // シリアルポートの設定
@@ -44,16 +50,7 @@ namespace Test
             sport.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
             return true;
         }
-        public string getSerialLine()
-        {
-            string str = null;
-            if (bufstr != null)
-            {
-                str = bufstr;
-                bufstr = null;
-            }
-            return str;
-        }
+
         public bool GetVoltageData(out long u_sec, out double voltage)
         {
             u_sec = cnt += 100;
@@ -61,12 +58,27 @@ namespace Test
             return true;
         }
 
-        private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
+        /// <summary>
+        /// シリアルポートから受信したデータを処理します。
+        /// </summary>
+        /// <param name="sender">イベントの送信元オブジェクト</param>
+        /// <param name="e">イベントのデータ</param>
+        public void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
             string dataReceived = sp.ReadExisting();
             bufstr = dataReceived;
+            OnDataReceived(dataReceived);
             Console.WriteLine(dataReceived);
+        }
+
+        /// <summary>
+        /// DataReceivedイベントを発生させるメソッド
+        /// </summary>
+        /// <param name="data">受信したデータ</param>
+        protected virtual void OnDataReceived(string data)
+        {
+            DataReceived?.Invoke(this, data);
         }
 
     }

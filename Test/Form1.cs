@@ -22,7 +22,8 @@ namespace Test
             {
                 writeLabel("Conneced!");
             }
-            this.button1.Click += (sender, e) => { this.label1.Text = dataReceiver.getSerialLine(); };
+            SerialPort serialPort = new SerialPort("COM9", 9600, Parity.None, 8, StopBits.One);
+            serialPort.DataReceived += new SerialDataReceivedEventHandler(dataReceiver.DataReceivedHandler);
         }
         
         private void button1_Click(object sender, EventArgs e)
