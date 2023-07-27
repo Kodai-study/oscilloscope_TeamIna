@@ -14,6 +14,9 @@ namespace Test
     public partial class Form1 : Form
     {
         DataReceiver dataReceiver = new DataReceiver();
+        /// <summary>
+        /// フォームのクラス
+        /// </summary>
         public Form1()
         {
             InitializeComponent();
@@ -22,10 +25,20 @@ namespace Test
             {
                 writeLabel("Conneced!");
             }
-            SerialPort serialPort = new SerialPort("COM9", 9600, Parity.None, 8, StopBits.One);
-            serialPort.DataReceived += new SerialDataReceivedEventHandler(dataReceiver.DataReceivedHandler);
+            dataReceiver.DataReceived += DataReceiver_DataReceived;
         }
-        
+
+        /// <summary>
+        /// DataReceivedイベントのハンドラーメソッド
+        /// </summary>
+        /// <param name="sender">イベントの送信元オブジェクト</param>
+        /// <param name="data">受信したデータ</param>
+        private void DataReceiver_DataReceived(object sender, string data)
+        {
+            // DataReceivedイベントが発生したときに、writeLabelメソッドを呼び出す
+            writeLabel(data);
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
 
@@ -41,6 +54,11 @@ namespace Test
 
         }
 
+
+        /// <summary>
+        /// ラベルにテキストを表示するメソッド
+        /// </summary>
+        /// <param name="str">表示するテキスト</param>
         public void writeLabel(string str)
         {
             this.label1.Text = str;

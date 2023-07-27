@@ -14,8 +14,10 @@ namespace Test
         public event EventHandler<string> DataReceived;
         private long cnt;
         private string bufstr;
+
         /// <summary>
         /// 指定されたCOMポートでシリアル通信を開始します。
+        /// シリアルデータを受け取った時のイベントハンドラも開始します。
         /// </summary>
         /// <param name="comPort">シリアル通信のポート番号</param>
         /// <returns>シリアル通信の開始に成功したかどうかを示す値</returns>
