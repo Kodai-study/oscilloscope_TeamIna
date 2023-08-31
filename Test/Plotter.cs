@@ -1,10 +1,6 @@
 using ScottPlot;
 using ScottPlot.Plottable;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Test
 {
@@ -16,6 +12,9 @@ namespace Test
     /// </summary>
     public class Plotter
     {
+        public enum AxisScaleMode { ByRange, ByDivSize }
+
+
         private FormsPlot formPlot;
 
         /// <summary>
@@ -31,7 +30,7 @@ namespace Test
         ///  １つの画面で複数のプロットをするようになると、やり方が変わるかも
         /// </summary>
         private readonly ScatterPlot scatterPlot;
-     
+
         /// <summary>
         ///  FormPlotのみ操作するときのコンストラクタ
         /// </summary>
@@ -41,7 +40,12 @@ namespace Test
             this.formPlot = formPlot;
             voltageDataList = new List<double>();
             timeDataList = new List<double>();
+            voltageDataList.Add(0.0);
+            timeDataList.Add(0.0);
             scatterPlot = formPlot.Plot.AddScatter(timeDataList.ToArray(), voltageDataList.ToArray());
+            formPlot.Plot.XLabel("時間(ms)");
+            formPlot.Plot.YLabel("電圧(V)");
+            formPlot.Refresh();
         }
 
         /// <summary>
@@ -55,8 +59,28 @@ namespace Test
             voltageDataList.Add(voltageData);
             timeDataList.Add(u_sec * 10e-6);
             scatterPlot.Update(timeDataList.ToArray(), voltageDataList.ToArray());
-            formPlot.Plot.AxisAuto(); // 自動的に軸の範囲を調整するカー
-            // labelをの文字を変えたい
+            formPlot.Plot.AxisAuto();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="arg1"></param>
+        /// <param name="arg2"></param>
+        public void SetXAxisScale(AxisScaleMode mode, double arg1, double arg2 = 0.0)
+        {
+            if (mode == AxisScaleMode.ByDivSize)
+            {
+
+            }
+            else if (mode == AxisScaleMode.ByRange)
+            {
+
+            }
+            formPlot.Plot.AxisPan(10, 10);
+
+        }
+
     }
 }

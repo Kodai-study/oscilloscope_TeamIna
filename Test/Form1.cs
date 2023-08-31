@@ -47,6 +47,8 @@ namespace Test
             formsPlot1.Plot.SetAxisLimitsX(xMin: 0, xMax: 0.01);
             formsPlot1.Plot.AxisAutoY();
             formsPlot1.Plot.AxisAutoX();
+
+            //formsPlot1.Plot.AxisPan(10, 10);
             this.formsPlot1.Refresh();
         }
     }
