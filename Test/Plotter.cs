@@ -1,5 +1,6 @@
 using ScottPlot;
 using ScottPlot.Plottable;
+using System;
 using System.Collections.Generic;
 
 namespace Test
@@ -12,10 +13,39 @@ namespace Test
     /// </summary>
     public class Plotter
     {
+
+        /// <summary>
+        ///  横軸の縮尺を設定するときの設定方法
+        ///  ByRange : 横軸すべてで値を設定する(始点から終点までの時間)
+        ///  ByDivSize : 1目盛りの時間で値を設定する
+        /// </summary>
         public enum AxisScaleMode { ByRange, ByDivSize }
 
+        /// <summary>
+        ///  横軸の秒数をmsの単位に変換する関数
+        /// </summary>
+        private static readonly Func<double, string> msecFormat = (tickValue) =>
+        {
+            return $"{tickValue * 1e+3:F2}ms";
+        };
 
-        private FormsPlot formPlot;
+        /// <summary>
+        ///  横軸の秒数をμsの単位に変換する関数
+        /// </summary>
+        private static readonly Func<double, string> usecFormat = (tickValue) =>
+        {
+            return $"{tickValue * 1e+6:F2}us"; 
+        };
+
+        /// <summary>
+        /// 横軸の秒数をsの単位に変換する関数
+        /// </summary>
+        private static readonly Func<double, string> secFormat = (tickValue) =>
+        {
+            return $"{tickValue:F2}s";
+        };
+
+        private readonly FormsPlot formPlot;
 
         /// <summary>
         ///  縦軸、表示する電圧値のリスト
@@ -45,6 +75,7 @@ namespace Test
             scatterPlot = formPlot.Plot.AddScatter(timeDataList.ToArray(), voltageDataList.ToArray());
             formPlot.Plot.XLabel("時間(ms)");
             formPlot.Plot.YLabel("電圧(V)");
+            formPlot.Plot.XAxis.TickLabelFormat(msecFormat);
             formPlot.Refresh();
         }
 
@@ -57,7 +88,7 @@ namespace Test
         public void registerData(long u_sec, double voltageData)
         {
             voltageDataList.Add(voltageData);
-            timeDataList.Add(u_sec * 10e-6);
+            timeDataList.Add(u_sec * 1e-6);
             scatterPlot.Update(timeDataList.ToArray(), voltageDataList.ToArray());
             formPlot.Plot.AxisAuto();
         }
@@ -79,8 +110,6 @@ namespace Test
 
             }
             formPlot.Plot.AxisPan(10, 10);
-
         }
-
     }
 }
