@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="ScottPlot.WinForms" Version="4.1.64" />
+    <PackageReference Include="System.IO.Ports" Version="4.7.0" />
   </ItemGroup>
 
 </Project>

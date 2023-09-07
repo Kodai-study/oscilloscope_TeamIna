@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,13 +17,33 @@ namespace Test
     {
         Plotter plotter;
         DataReceiver dataReceiver;
-
+        /// <summary>
+        /// フォームのクラス
+        /// </summary>
         public Form1()
         {
             InitializeComponent();
-            this.button1.Click += (sender, e) => { this.label1.Text = "Clicked"; };
-            this.plotter = new(formsPlot1);
-            dataReceiver = new();
+
+            plotter = new(formsPlot1);
+            this.dataReceiver = new(plotter);
+            //this.button1.Click += (sender, e) => { this.label1.Text = "Clicked"; };
+            dataReceiver.DataReceived += DataReceiver_DataReceived;
+
+            if (dataReceiver.openSerial("COM8") == true)
+            {
+                writeLabel("Conneced!");
+            }
+        }
+
+        /// <summary>
+        /// DataReceivedイベントのハンドラーメソッド
+        /// </summary>
+        /// <param name="sender">イベントの送信元オブジェクト</param>
+        /// <param name="data">受信したデータ</param>
+        private void DataReceiver_DataReceived(object sender, string data)
+        {
+            // DataReceivedイベントが発生したときに、writeLabelメソッドを呼び出す
+            writeLabel(data);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -38,19 +59,21 @@ namespace Test
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            /* ボタンを押すと、データを受け取ったと仮定して、プロッタにデータを渡す */
-            if (dataReceiver.GetVoltageData(out long u_sec, out double voltage))
-            {
-                this.plotter.registerData(u_sec, voltage);
-            }
-
-            /* 横幅、縦幅は、今のところ自動で変わる */
-            formsPlot1.Plot.SetAxisLimitsX(xMin: 0, xMax: 0.01);
-            formsPlot1.Plot.AxisAutoY();
-            formsPlot1.Plot.AxisAutoX();
-
-            //formsPlot1.Plot.AxisPan(10, 10);
-            this.formsPlot1.Refresh();
         }
+
+
+        /// <summary>
+        /// ラベルにテキストを表示するメソッド
+        /// </summary>
+        /// <param name="str">表示するテキスト</param>
+        public void writeLabel(string str)
+        {
+            this.label1.Text = str; 
+           // this.Invoke((MethodInvoker)delegate {
+           //     // label1を更新するコード
+           //     label1.Text = str;
+           // });
+        }
+      
     }
 }
