@@ -26,13 +26,13 @@ namespace Test
 
             plotter = new(formsPlot1);
             this.dataReceiver = new(plotter);
-            //this.button1.Click += (sender, e) => { this.label1.Text = "Clicked"; };
-            dataReceiver.DataReceived += DataReceiver_DataReceived;
 
             if (dataReceiver.openSerial("COM8") == true)
             {
                 writeLabel("Conneced!");
             }
+            //this.button1.Click += (sender, e) => { this.label1.Text = "Clicked"; };
+            dataReceiver.DataReceived += DataReceiver_DataReceived;
         }
 
         /// <summary>
@@ -43,7 +43,27 @@ namespace Test
         private void DataReceiver_DataReceived(object sender, string data)
         {
             // DataReceivedイベントが発生したときに、writeLabelメソッドを呼び出す
+            //writeLabel(data);
             writeLabel(data);
+            var Lines = data.Split("\r\n");
+            string[] datas;
+            try
+            {
+                if (Lines.Length >= 2)
+                datas = Lines[Lines.Length - 2].Split(',');
+            else
+                datas = Lines[0].Split(',');
+
+            if (datas[0] == "")
+                return;
+
+                plotter.registerData(Int64.Parse(datas[0]), Double.Parse(datas[1]));
+                formsPlot1.Refresh();
+            }
+            catch(Exception e)
+            {
+
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -59,6 +79,7 @@ namespace Test
 
         private void button1_Click_1(object sender, EventArgs e)
         {
+            formsPlot1.Refresh();
         }
 
 
@@ -68,11 +89,19 @@ namespace Test
         /// <param name="str">表示するテキスト</param>
         public void writeLabel(string str)
         {
-            this.label1.Text = str; 
-           // this.Invoke((MethodInvoker)delegate {
-           //     // label1を更新するコード
-           //     label1.Text = str;
-           // });
+            try
+            {
+                //  this.label1.Text = str;
+                this.Invoke((MethodInvoker)delegate
+                {
+                    // label1を更新するコード
+                    label1.Text = str;
+                });
+            }
+            catch(Exception e)
+            {
+
+            }
         }
       
     }

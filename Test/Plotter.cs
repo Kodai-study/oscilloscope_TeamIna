@@ -77,6 +77,8 @@ namespace Test
             formPlot.Plot.YLabel("“dˆ³(V)");
             formPlot.Plot.XAxis.TickLabelFormat(msecFormat);
             formPlot.Refresh();
+            voltageDataList.Remove(0.0);
+            timeDataList.Remove(0.0);
         }
 
         /// <summary>
