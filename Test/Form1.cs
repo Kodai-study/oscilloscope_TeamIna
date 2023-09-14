@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ScottPlot.Renderable;
+using System.Text.RegularExpressions;
 
 namespace Test
 {
@@ -46,21 +47,46 @@ namespace Test
             //writeLabel(data);
             writeLabel(data);
             var Lines = data.Split("\r\n");
-            string[] datas;
             try
             {
-                if (Lines.Length >= 2)
-                datas = Lines[Lines.Length - 2].Split(',');
-            else
-                datas = Lines[0].Split(',');
+                //     if (Lines.Length >= 2)
+                //         datas = Lines[Lines.Length - 2].Split(',');
+                //     else
+                //         datas = Lines[0].Split(',');
+                //
+                //     if (datas[0] == "")
+                //         return;
 
-            if (datas[0] == "")
-                return;
 
-                plotter.registerData(Int64.Parse(datas[0]), Double.Parse(datas[1]));
-                formsPlot1.Refresh();
+                // 正規表現を使用してデータを解析する
+                Regex regex = new Regex(@"^(\d+),(\d+)$");
+                
+                foreach (var e in Lines)
+                {
+                    Match match = regex.Match(e);
+                    if (match.Success)
+                    {
+                        // グループ1は秒数、グループ2は電圧値
+                        string seconds = match.Groups[1].Value;
+                        string voltage = match.Groups[2].Value;
+                        if (string.IsNullOrEmpty(seconds) || Int64.Parse(seconds) <= 100000)
+                        {
+                            continue;
+                        }
+                        plotter.registerData(Int64.Parse(seconds), Int64.Parse(voltage));
+
+
+                        if (Int64.Parse(seconds) <= 10000)
+                        {
+                            Console.WriteLine("#");
+                        }
+                        formsPlot1.Refresh();
+                    }
+                }
+
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
 
             }
@@ -98,11 +124,11 @@ namespace Test
                     label1.Text = str;
                 });
             }
-            catch(Exception e)
+            catch (Exception e)
             {
 
             }
         }
-      
+
     }
 }

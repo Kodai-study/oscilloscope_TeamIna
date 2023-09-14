@@ -34,7 +34,7 @@ namespace Test
         /// </summary>
         private static readonly Func<double, string> usecFormat = (tickValue) =>
         {
-            return $"{tickValue * 1e+6:F2}us"; 
+            return $"{tickValue * 1e+6:F2}us";
         };
 
         /// <summary>
@@ -60,6 +60,8 @@ namespace Test
         ///  １つの画面で複数のプロットをするようになると、やり方が変わるかも
         /// </summary>
         private readonly ScatterPlot scatterPlot;
+
+        private double spanTime = 10 * 1e-3;
 
         /// <summary>
         ///  FormPlotのみ操作するときのコンストラクタ
@@ -91,8 +93,25 @@ namespace Test
         {
             voltageDataList.Add(voltageData);
             timeDataList.Add(u_sec * 1e-6);
+
+            if ((u_sec * 1e-6) == 0.0)
+            {
+                Console.WriteLine("hoge");
+            }
+
+            foreach (var e in timeDataList)
+            {
+                if (e < (u_sec * 1e-6 - 0.1))
+                {
+                    timeDataList.Remove(e);
+                    voltageDataList.Remove(voltageDataList[0]);
+                }
+                else
+                    break;
+            }
             scatterPlot.Update(timeDataList.ToArray(), voltageDataList.ToArray());
             formPlot.Plot.AxisAuto();
+            formPlot.Refresh();
         }
 
         /// <summary>
